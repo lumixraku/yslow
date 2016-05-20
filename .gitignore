@@ -1,7 +1,7 @@
 .svn/
 _site/
-build/
 pkg/
+# build/
 *.swp
 .DS_Store
 node_modules/
