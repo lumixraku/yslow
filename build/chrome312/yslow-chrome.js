@@ -630,7 +630,7 @@ YSLOW.ComponentSet.prototype = {
             // remove temp iframe and invoke callback passing cset
             ifrm.parentNode.removeChild(ifrm);
             triggered = 1;
-            callback(ret);
+            callback(ret);// ret就是comps  raw info
         };
 
         // create temp iframe with doc html
@@ -729,7 +729,7 @@ YSLOW.ComponentSet.isValidURL = function (url) {
  * @class Component
  * @constructor
  */
-YSLOW.Component = function (url, type, parent_set, o) {
+YSLOW.Component = function (url, type, parent_set, o) {//创建comps对象
     var obj = o && o.obj,
         comp = (o && o.comp) || {};
 
@@ -823,10 +823,10 @@ YSLOW.Component.prototype.populateProperties = function (resolveRedirect, ignore
     content_length = that.headers['content-length'];
 
     // gzip, deflate
-    encoding = YSLOW.util.trim(that.headers['content-encoding']);
+    encoding = YSLOW.util.trim(that.headers['content-encoding']);//这里 似乎所有的图片资源都没有content-encoding
     if (encoding === 'gzip' || encoding === 'deflate') {
         that.compressed = encoding;
-        that.size = (that.body.length) ? that.body.length : NULL;
+        that.size = (that.body.length) ? that.body.length : NULL; //计算资源的size
         if (content_length) {
             that.size_compressed = parseInt(content_length, 10) ||
                 content_length;
@@ -1066,7 +1066,7 @@ YSLOW.Component.prototype.setComponentDetails = function (o) {
             comp.response_type = comp.type;
             comp.cookie = comp.headers['set-cookie'] || '';
             comp.nsize = parseInt(comp.headers['content-length'], 10) ||
-                comp.body.length;
+                comp.body.length;//计算了所有的请求资源的大小  包括图片
             comp.respTime = 0;
             if (component.after_onload) {
                 comp.after_onload = component.after_onload;
@@ -9517,13 +9517,13 @@ YSLOW.peeler.peel = function (node) {
                     comps.push({
                         type: doc.type,
                         href: url
-                    });
+                    });// 此时doc是整个页面（待测页面）的document
 
                     doct = doc.document;
                     if (doct && url) {
                         baseHref = this.getBaseHref(doct);
                         comps = comps.concat(this.findComponentsInNode(doct,
-                            baseHref, doc.type));
+                            baseHref, doc.type)); //该方法找出了文档中的所有的资源
                     }
                 }
             }

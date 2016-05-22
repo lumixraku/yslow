@@ -91,16 +91,16 @@
 
     function buildComponentSet(comps) {
         var i, comp, len,
-            cset = new YSLOW.ComponentSet(doc);
+            cset = new YSLOW.ComponentSet(doc);// doc  是弹出window的doc
 
         for (i = 0, len = comps.length; i < len; i += 1) {
-            comp = comps[i];
+            comp = comps[i];//此时comp 是 rawinfo 经过 addComponent 才有完整信息
             cset.addComponent(comp.href, comp.type,
                 comp.base ? comp.base : baseHref, {
                     obj: comp.obj,
                     component: comp,
                     comp: comp
-                });
+                }); //调用yslow-chrome 中的addComponent()   (L213)
         }
         yscontext.component_set = cset;
 
@@ -126,7 +126,7 @@
             'current': reqCount,
             'last_component_url': url
         });
-        if (reqCount === fetchCount) {
+        if (reqCount === fetchCount) {  //所有的请求都有了响应
             YSLOW.util.event.fire('componentFetchProgress', {
                 'total': fetchCount + 2,
                 'current': fetchCount + 1,
